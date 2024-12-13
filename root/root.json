@@ -1,0 +1,37 @@
+{
+    "names": ["Aimee", "Alvin", "Alyse", "Anders", "Bhea", "Billi", "Braden", "Buford", "Cesspyr", "Cinder", "Cloak", "Constance", "Dawna", "Dewly", "Doneel", "Dugan", "Ellaine", "Emmie", "Ewan", "Eward", "Flannera", "Fog", "Foster", "Frink", "Gemma", "Golden", "Greta", "Gustav", "Harper", "Henny", "Hinnic", "Howerd", "Igrin", "Ilso", "Inda", "Irwen", "Jacly", "Jasper", "Jinx", "Johann", "Keilee", "Keera", "Kagan", "Konnor", "Laina", "Lindyn", "Lockler", "Longtooth", "Masgood", "Mint", "Monca", "Murty", "Nail", "Nan", "Nigel", "Nomi", "Olaga", "Omin", "Orry", "Oxley", "Pattee", "Phona", "Pintin", "Prewitt", "Quay", "Quentin", "Quill", "Quinella", "Reece", "Rhodia", "Roric", "Rose", "Sarra", "Selwin", "Sorin", "Stasee", "Tammora", "Thickfur", "Timber", "Tondric", "Ulveny", "Ulvid", "Ummery", "Urma", "Vance", "Vennic",  "Vittora", "Vost", "Wanda", "Wettlecress", "Whickam", "Woodleaf", "Xander", "Xara", "Xeelie", "Xim", "Yasmin", "Yates", "Yolenda", "Yotterie", "Zachrie", "Zain", "Zoic", "Zola"],
+    "species": ["badger", "beaver", "bluejay", "cat", "fox", "hawk", "lizard", "mouse", "opossum", "otter", "owl", "rabbit", "raccoon", "squirrel", "wolf"],
+    "drives": ["to get revenge", "to get rich", "to make family safe", "to make home safe", "to gain power", "to explore", "to build something magnificent", "to resist invaders", "to defend the weak", "to destroy an enemy", "to wage war", "to prove worth", "to undermine a figure of power", "to find comfort", "to serve a higher cause", "to escape", "to negotiate peaceful resolutions", "to survive at all costs", "to earn social status and position", "to take control", "to exert power and authority on others", "to lay waste"],
+    "harm_tracks": {
+        "standard": {
+            "injury": 1,
+            "exhaustion": 1,
+            "wear": 1,
+            "morale": 1
+        },
+        "brute": {
+            "injury": 3,
+            "exhaustion": 2,
+            "wear": 3,
+            "morale": 2
+        },
+        "leader": {
+            "injury": 1,
+            "exhaustion": 2,
+            "wear": 1,
+            "morale": 3
+        },
+        "lieutenant": {
+            "injury": 2,
+            "exhaustion": 2,
+            "wear": 3,
+            "morale": 3
+        },
+        "bear": {
+            "injury": 1,
+            "exhaustion": 1,
+            "wear": 1,
+            "morale": 1
+        }
+    }
+}
