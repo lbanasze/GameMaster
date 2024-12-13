@@ -39,11 +39,11 @@ class NPC:
 
 
 def initialize_data():
-    with open(os.path.join(os.path.dirname(__file__), '../data/root.json')) as infile:
+    with open('root.json') as infile:
         root_data = json.load(infile)
-        names = Enum("Name", [(root_data["names"][i], i) for i in range(len(root_data["names"]))])
+        name_enums = Enum("Name", [(root_data["names"][i], i) for i in range(len(root_data["names"]))])
         species_enums = Enum('Species', [(root_data["species"][i], i) for i in range(len(root_data["species"]))])
         drive_enums = Enum('Drive', [(root_data["drives"][i], i) for i in range(len(root_data["drives"]))])
         harm_tracks = { key:HarmTrack(**value) for (key,value) in root_data["harm_tracks"].items()}
 
-
+        return name_enums, species_enums, drive_enums, harm_tracks

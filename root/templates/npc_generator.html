@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        @font-face{ 
+            font-family: Luminari-Regular;
+            src: url_for('static',filename='fonts/Luminari-Regular.ttf');
+        }
+    </style>
+
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+
+    <body>
+        <form action="#" id="addNpcInformation">
+            <h2>NPC Information</h2>  
+            <label for="fname">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+
+            <label for="species">Species:</label><br>
+            <select name="name" id="name">
+                {% for item in species_options %}
+                    <option value={{item.id}}>{{item.display}}</option>
+                {% endfor %}
+            </select><br>
+
+
+            <label for="harm_track">Harm Track:</label><br>
+            <select name="harm_track" id="harm_track">
+                {% for item in harm_track_options %}
+                    <option value={{item.id}}>{{item.display}}</option>
+                {% endfor %}
+            </select><br>
+
+        </form>
+    </body>
+</html>
