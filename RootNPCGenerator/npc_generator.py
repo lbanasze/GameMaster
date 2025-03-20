@@ -39,7 +39,7 @@ class NPC:
 
 
 def initialize_data():
-    with open('root.json') as infile:
+    with open('/Users/bug/github/GameMaster/GameMaster/root/root.json') as infile:
         root_data = json.load(infile)
         name_enums = Enum("Name", [(root_data["names"][i], i) for i in range(len(root_data["names"]))])
         species_enums = Enum('Species', [(root_data["species"][i], i) for i in range(len(root_data["species"]))])
