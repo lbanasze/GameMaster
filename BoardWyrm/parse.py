@@ -6,6 +6,33 @@ small_collection_user = "thebigbuggyboo" # < 20 games
 mid_collection_user = ""
 huge_collection_user = "Tazzmann" # > 850 games
 
+""" 
+    Example item from User collection:
+
+    {
+        "objecttype": "thing",
+        "objectid": "359871",
+        "subtype": "boardgame",
+        "collid": "130489491",
+        "name": "Arcs",
+        "yearpublished": "2024",
+        "image": "https://cf.geekdo-images.com/XWImAu_3RK61wbzcKboVdA__original/img/43ianMZOks7UHlZILx0VBRntOmM=/0x0/filters:format(png)/pic8145530.png",
+        "thumbnail": "https://cf.geekdo-images.com/XWImAu_3RK61wbzcKboVdA__thumb/img/Ry-6KHwNgERWadyxs1X1_P3dMvY=/fit-in/200x150/filters:strip_icc()/pic8145530.png",
+        "status": {
+            "own": "1",
+            "prevowned": "0",
+            "fortrade": "0",
+            "want": "0",
+            "wanttoplay": "0",
+            "wanttobuy": "0",
+            "wishlist": "0",
+            "preordered": "0",
+            "lastmodified": "2025-03-18 19:37:10"
+        },
+        "numplays": "0"
+    }  
+"""
+
 def parse_xml_items(root):
     """Parse a tree, look for "items", convert to json with all properties
 
@@ -47,36 +74,10 @@ def get_bgg_user_collection(username, subtype="boardgame"):
 
     root = ET.fromstring(resp.text)
     collection = parse_xml_items(root)
-    """ 
-    Example item from collection:
-
-    {
-        "objecttype": "thing",
-        "objectid": "359871",
-        "subtype": "boardgame",
-        "collid": "130489491",
-        "name": "Arcs",
-        "yearpublished": "2024",
-        "image": "https://cf.geekdo-images.com/XWImAu_3RK61wbzcKboVdA__original/img/43ianMZOks7UHlZILx0VBRntOmM=/0x0/filters:format(png)/pic8145530.png",
-        "thumbnail": "https://cf.geekdo-images.com/XWImAu_3RK61wbzcKboVdA__thumb/img/Ry-6KHwNgERWadyxs1X1_P3dMvY=/fit-in/200x150/filters:strip_icc()/pic8145530.png",
-        "status": {
-            "own": "1",
-            "prevowned": "0",
-            "fortrade": "0",
-            "want": "0",
-            "wanttoplay": "0",
-            "wanttobuy": "0",
-            "wishlist": "0",
-            "preordered": "0",
-            "lastmodified": "2025-03-18 19:37:10"
-        },
-        "numplays": "0"
-    }  
-    """
 
     return collection
 
-def get_bgg_game(game_id):
+def get_bgg_game_details(game_id):
     resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
     if resp.status_code != 200:
         return None
@@ -88,8 +89,21 @@ def get_bgg_game(game_id):
 def main():
     # parse_bgg_user_collection()
     start_time = time.time()
-    boardgames = get_bgg_user_collection(small_collection_user)
+    boardgames = get_bgg_user_collection(huge_collection_user)
     end_time = time.time()
     print(f"Querying {len(boardgames)} took {end_time - start_time} seconds.")
+    
+    i = 1
+    time_total = 0
+    for game in boardgames:
+        start_time = time.time()
+        get_bgg_game_details(game["objectid"])
+        end_time = time.time()
+        delta = end_time - start_time
+        time_total += delta
+        print(f"Requesting details for game {i}/{len(boardgames)} took {delta} seconds.")
+        i += 1
+
+    print(f"Requesting details for {len(boardgames)} took {time_total} seconds.")
 
 main()
