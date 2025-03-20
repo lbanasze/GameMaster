@@ -1,5 +1,10 @@
 import requests
+import time
 import xml.etree.ElementTree as ET 
+
+small_collection_user = "thebigbuggyboo" # < 20 games
+mid_collection_user = ""
+huge_collection_user = "Tazzmann" # > 850 games
 
 def parse_xml_items(root):
     """Parse a tree, look for "items", convert to json with all properties
@@ -21,7 +26,7 @@ def parse_xml_items(root):
             tag = prop.tag
             text = prop.text
             attrib = prop.attrib
-            if text:
+            if text and text.strip():
                 item_properties[tag] = text
             elif attrib:
                 item_properties[tag] = attrib
@@ -32,10 +37,13 @@ def parse_xml_items(root):
     return items
 
 
-def get_bgg_user_collection(username):
-    resp = requests.get(f"https://boardgamegeek.com/xmlapi2/collection?username={username}")
+def get_bgg_user_collection(username, subtype="boardgame"):
+    start_time = time.time()
+    resp = requests.get(f"https://boardgamegeek.com/xmlapi2/collection?username={username}&own=1&subtype={subtype}&stats=1")
     if resp.status_code != 200:
         return None
+    end_time = time.time()
+    print(f"Request for collection by username took {end_time - start_time} seconds")
 
     root = ET.fromstring(resp.text)
     collection = parse_xml_items(root)
@@ -66,14 +74,7 @@ def get_bgg_user_collection(username):
     }  
     """
 
-    boardgames = []
-    for item in collection:
-        if item.get("subtype") == "boardgame":
-            new_boardgame = get_bgg_game(item.get("objectid"))
-            if new_boardgame:
-                boardgames.append(new_boardgame)
-    
-    return boardgames
+    return collection
 
 def get_bgg_game(game_id):
     resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
@@ -86,8 +87,9 @@ def get_bgg_game(game_id):
 
 def main():
     # parse_bgg_user_collection()
-    boardgames = get_bgg_user_collection("thebigbuggyboo")
-    print(boardgames)
-
+    start_time = time.time()
+    boardgames = get_bgg_user_collection(small_collection_user)
+    end_time = time.time()
+    print(f"Querying {len(boardgames)} took {end_time - start_time} seconds.")
 
 main()
