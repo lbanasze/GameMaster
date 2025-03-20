@@ -1,7 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET 
 
-def parse_xml_items(tree):
+def parse_xml_items(root):
     """Parse a tree, look for "items", convert to json with all properties
 
     Args:
@@ -10,7 +10,6 @@ def parse_xml_items(tree):
     Returns:
         _type_: _description_
     """
-    root = tree.getroot()
     item_elements = root.findall('./item')
     items = []
     for item in item_elements:
@@ -34,8 +33,12 @@ def parse_xml_items(tree):
 
 
 def get_bgg_user_collection(username):
-    tree = ET.parse('api_sample_resps/bgg/user_collection.xml')
-    collection = parse_xml_items(tree)
+    resp = requests.get(f"https://boardgamegeek.com/xmlapi2/collection?username={username}")
+    if resp.status_code != 200:
+        return None
+
+    root = ET.fromstring(resp.text)
+    collection = parse_xml_items(root)
     """ 
     Example item from collection:
 
@@ -73,11 +76,18 @@ def get_bgg_user_collection(username):
     return boardgames
 
 def get_bgg_game(game_id):
-    pass
+    resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
+    if resp.status_code != 200:
+        return None
 
+    root = ET.fromstring(resp.text)
+    game = parse_xml_items(root)
+    return game
 
 def main():
-    parse_bgg_user_collection()
+    # parse_bgg_user_collection()
+    boardgames = get_bgg_user_collection("thebigbuggyboo")
+    print(boardgames)
 
 
 main()
