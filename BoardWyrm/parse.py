@@ -106,4 +106,4 @@ def main():
 
     print(f"Requesting details for {len(boardgames)} took {time_total} seconds.")
 
-main()
+# main()
