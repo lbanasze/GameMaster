@@ -38,10 +38,10 @@ def user():
     #
     # Split the games into shelves of 5 games max
     game_shelves = []
-    for i in range(0, len(thumbnails), 5):
-        game_shelves.append(thumbnails[i : i + 5])
+    for i in range(0, len(thumbnails), 7):
+        game_shelves.append(thumbnails[i : i + 7])
 
-    return render_template("shelf.html.jinja", game_shelves=game_shelves)
+    return render_template("shelf.html.jinja", game_shelves=game_shelves, username=username)
 
 
 @app.route("/game/<game_id>")

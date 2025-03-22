@@ -24,31 +24,38 @@
     .game-box:hover {
         transform: translateY(-10px);
     }
+    .shelf-support {
+        background-color: #8B4513;
+        box-shadow: 2px 0 4px -2px #5D3212;
+        position: relative;
+        z-index: 10;
+    }
+    .shelf-support:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(160,82,45,0.5) 0%, rgba(139,69,19,0) 50%, rgba(139,69,19,0.2) 100%);
+        border-radius: 2px;
+    }
 </style>
 <body class="bg-amber-50 min-h-screen p-8">
     <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold text-center text-amber-800 mb-8">My Board Game Collection</h1>
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">{{ username }}'s collection</h1>
 
         {% for shelf in game_shelves %}
-        <div class="mb-16 relative">
-            <!-- Shelf -->
-            <div class="shelf h-4 w-full rounded-sm mb-2"></div>
-
-            <!-- Games on shelf -->
-            <div class="flex justify-center gap-4 px-4">
-                {% for game_url in shelf %}
-                <div class="game-box w-36 flex flex-col items-center">
-                    <div class="h-48 w-36 overflow-hidden rounded-lg mb-2 p-2">
-                        <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full object-contain">
-                    </div>
-                </div>
-                {% endfor %}
+        <!-- Games on shelf -->
+        <div class="flex border-8 border-amber-800">
+            {% for game_url in shelf %}
+            <div class="game-box">
+                <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full">
             </div>
+            {% endfor %}
+            <div class="shelf-support h-full rounded-sm"></div>
         </div>
         {% endfor %}
-
-        <!-- Shelf -->
-        <div class="shelf h-4 w-full rounded-sm mb-2"></div>
     </div>
 </body>
 </html>
