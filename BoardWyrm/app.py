@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("child.html.jinja")
+    return render_template("home.html.jinja")
 
 
 @app.route("/user")
