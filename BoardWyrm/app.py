@@ -17,12 +17,11 @@ def index():
 def user():
     username = request.args.get("bgg_username", "")
     collection = get_bgg_user_collection(username)
-    for item in collection:
-        pprint(item)
     thumbnails = list(map(lambda item: item.get("thumbnail", ""), collection))
-    game_shelves = []
-    for i in range(0, len(thumbnails), 7):
-        game_shelves.append(thumbnails[i : i + 7])
+    # Separate the games into N groups
+    game_shelves = list(
+        map(lambda i: thumbnails[i : i + 7], range(0, len(thumbnails), 7))
+    )
 
     return render_template(
         "shelf.html.jinja", game_shelves=game_shelves, username=username
