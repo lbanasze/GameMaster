@@ -1,3 +1,4 @@
+import json
 import requests
 import time
 import xml.etree.ElementTree as ET 
@@ -77,33 +78,74 @@ def get_bgg_user_collection(username, subtype="boardgame"):
 
     return collection
 
+
+def get_cached_bgg_game_details(game_ids):
+    with open("all_cached_games.json", "r") as infile:
+        all_cached_games = json.load(infile)
+
+    cached_games = []
+    uncached_game_ids = []
+    for game_id in game_ids:
+        if game_id in all_cached_games.keys():
+            cached_games.append(all_cached_games[game_id])
+        else:
+            uncached_game_ids.append(game_id)
+
+    return cached_games, uncached_game_ids
+
 def get_bgg_game_details(game_id):
     resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
-    if resp.status_code != 200:
-        return None
+    if resp.status_code == 202:
+        time.sleep(1)
+        resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
 
+    if resp.status_code == 429: # Rate limit
+        print("Hit rate limit, sleeping for 5 seconds")
+        time.sleep(5)
+        resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
+
+
+    if resp.status_code != 200:
+        print(f"Response code {resp.status_code}, {resp.text}")
+        return []
+    
     root = ET.fromstring(resp.text)
     game = parse_xml_items(root)
     return game
 
-def main():
-    # parse_bgg_user_collection()
-    start_time = time.time()
-    boardgames = get_bgg_user_collection(huge_collection_user)
-    end_time = time.time()
-    print(f"Querying {len(boardgames)} took {end_time - start_time} seconds.")
-    
+def batch_bgg_details(game_ids):
+    # The API allows up to 20 ids per request, so chunk the game ids to improve the request efficiency 
+    chunked_game_ids = [game_ids[i:i+20] for i in range(0, len(game_ids), 20)]
+    game_details = {}
     i = 1
     time_total = 0
-    for game in boardgames:
+    for chunk in chunked_game_ids:
         start_time = time.time()
-        get_bgg_game_details(game["objectid"])
+        new_game_details = get_bgg_game_details(','.join(chunk))
+        for game in new_game_details:
+            game_details[game["id"]] = game
+
         end_time = time.time()
         delta = end_time - start_time
         time_total += delta
-        print(f"Requesting details for game {i}/{len(boardgames)} took {delta} seconds.")
+        print(f"Requesting details for chunk {i}/{len(chunked_game_ids)} took {delta} seconds.")
         i += 1
 
-    print(f"Requesting details for {len(boardgames)} took {time_total} seconds.")
+    print(f"Requesting chunked details for {len(chunked_game_ids)} took {time_total} seconds.")
+    
+    return game_details
+
+def main():
+    # parse_bgg_user_collection()
+    start_time = time.time()
+    boardgames = get_bgg_user_collection(small_collection_user)
+    end_time = time.time()
+    print(f"Querying {len(boardgames)} took {end_time - start_time} seconds.")
+    
+    game_ids = [game["objectid"] for game in boardgames]
+    cached_games, uncached_game_ids = get_cached_bgg_game_details(game_ids)
+    game_details = batch_bgg_details(uncached_game_ids)
+    
+    print(game_details)
 
 # main()

@@ -39,7 +39,9 @@
                 {% for game_url in shelf %}
                 <div class="game-box w-36 flex flex-col items-center">
                     <div class="h-48 w-36 overflow-hidden rounded-lg mb-2 p-2">
-                        <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full object-contain">
+                        <form hx-get="/game">
+                            <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full object-contain">
+                        </form>
                     </div>
                 </div>
                 {% endfor %}

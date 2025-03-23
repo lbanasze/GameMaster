@@ -44,8 +44,9 @@ def user():
     return render_template("shelf.html.jinja", game_shelves=game_shelves)
 
 
-@app.route("/game/<game_id>")
-def game_id(game_id):
+@app.route("/game")
+def game_id():
+    game_id = request.args.get("game_id", "")
     details = parse.get_bgg_game_details(game_id)
     return escape(details)
 
