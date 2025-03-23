@@ -1,22 +1,5 @@
 <!-- board_game_shelf.html -->
 <style>
-    .shelf {
-        background-color: #8B4513;
-        box-shadow: 0 8px 6px -6px #5D3212;
-        position: relative;
-    }
-
-    .shelf:after {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: 0;
-        width: 100%;
-        height: 10px;
-        background-color: #A0522D;
-        border-radius: 4px 4px 0 0;
-    }
-
     .game-box {
         transition: transform 0.3s ease;
     }
@@ -24,51 +7,18 @@
     .game-box:hover {
         transform: translateY(-10px);
     }
-    .shelf-support {
-        background-color: #8B4513;
-        box-shadow: 2px 0 4px -2px #5D3212;
-        position: relative;
-        z-index: 10;
-    }
-    .shelf-support:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, rgba(160,82,45,0.5) 0%, rgba(139,69,19,0) 50%, rgba(139,69,19,0.2) 100%);
-        border-radius: 2px;
-    }
 </style>
 <body class="bg-amber-50 min-h-screen p-8">
     <div class="max-w-6xl mx-auto">
         <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">{{ username }}'s collection</h1>
 
         {% for shelf in game_shelves %}
-        <!-- Games on shelf -->
-        <div class="flex border-8 border-amber-800">
+        <div class="justify-center flex border-8 border-amber-800">
             {% for game_url in shelf %}
             <div class="game-box">
                 <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full">
-        <div class="mb-16 relative">
-            <!-- Shelf -->
-            <div class="shelf h-4 w-full rounded-sm mb-2"></div>
-
-            <!-- Games on shelf -->
-            <div class="flex justify-center gap-4 px-4">
-                {% for game_url in shelf %}
-                <div class="game-box w-36 flex flex-col items-center">
-                    <div class="h-48 w-36 overflow-hidden rounded-lg mb-2 p-2">
-                        <form hx-get="/game">
-                            <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full object-contain">
-                        </form>
-                    </div>
-                </div>
-                {% endfor %}
             </div>
             {% endfor %}
-            <div class="shelf-support h-full rounded-sm"></div>
         </div>
         {% endfor %}
     </div>
