@@ -1,11 +1,11 @@
 import json
 import requests
 import time
-import xml.etree.ElementTree as ET 
+import xml.etree.ElementTree as ET
 
-small_collection_user = "thebigbuggyboo" # < 20 games
+small_collection_user = "thebigbuggyboo"  # < 20 games
 mid_collection_user = ""
-huge_collection_user = "Tazzmann" # > 850 games
+huge_collection_user = "Tazzmann"  # > 850 games
 
 """ 
     Example item from User collection:
@@ -34,6 +34,7 @@ huge_collection_user = "Tazzmann" # > 850 games
     }  
 """
 
+
 def parse_xml_items(root):
     """Parse a tree, look for "items", convert to json with all properties
 
@@ -43,7 +44,7 @@ def parse_xml_items(root):
     Returns:
         _type_: _description_
     """
-    item_elements = root.findall('./item')
+    item_elements = root.findall("./item")
     items = []
     for item in item_elements:
         item_properties = {}
@@ -59,7 +60,6 @@ def parse_xml_items(root):
             elif attrib:
                 item_properties[tag] = attrib
 
-        
         items.append(item_properties)
 
     return items
@@ -67,7 +67,9 @@ def parse_xml_items(root):
 
 def get_bgg_user_collection(username, subtype="boardgame"):
     start_time = time.time()
-    resp = requests.get(f"https://boardgamegeek.com/xmlapi2/collection?username={username}&own=1&subtype={subtype}&stats=1")
+    resp = requests.get(
+        f"https://boardgamegeek.com/xmlapi2/collection?username={username}&own=1&subtype={subtype}&stats=1"
+    )
     if resp.status_code != 200:
         return None
     end_time = time.time()
@@ -93,47 +95,53 @@ def get_cached_bgg_game_details(game_ids):
 
     return cached_games, uncached_game_ids
 
+
 def get_bgg_game_details(game_id):
     resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
     if resp.status_code == 202:
         time.sleep(1)
         resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
 
-    if resp.status_code == 429: # Rate limit
+    if resp.status_code == 429:  # Rate limit
         print("Hit rate limit, sleeping for 5 seconds")
         time.sleep(5)
         resp = requests.get(f"https://boardgamegeek.com/xmlapi2/thing?id={game_id}")
 
-
     if resp.status_code != 200:
         print(f"Response code {resp.status_code}, {resp.text}")
         return []
-    
+
     root = ET.fromstring(resp.text)
     game = parse_xml_items(root)
     return game
 
+
 def batch_bgg_details(game_ids):
-    # The API allows up to 20 ids per request, so chunk the game ids to improve the request efficiency 
-    chunked_game_ids = [game_ids[i:i+20] for i in range(0, len(game_ids), 20)]
+    # The API allows up to 20 ids per request, so chunk the game ids to improve the request efficiency
+    chunked_game_ids = [game_ids[i : i + 20] for i in range(0, len(game_ids), 20)]
     game_details = {}
     i = 1
     time_total = 0
     for chunk in chunked_game_ids:
         start_time = time.time()
-        new_game_details = get_bgg_game_details(','.join(chunk))
+        new_game_details = get_bgg_game_details(",".join(chunk))
         for game in new_game_details:
             game_details[game["id"]] = game
 
         end_time = time.time()
         delta = end_time - start_time
         time_total += delta
-        print(f"Requesting details for chunk {i}/{len(chunked_game_ids)} took {delta} seconds.")
+        print(
+            f"Requesting details for chunk {i}/{len(chunked_game_ids)} took {delta} seconds."
+        )
         i += 1
 
-    print(f"Requesting chunked details for {len(chunked_game_ids)} took {time_total} seconds.")
-    
+    print(
+        f"Requesting chunked details for {len(chunked_game_ids)} took {time_total} seconds."
+    )
+
     return game_details
+
 
 def main():
     # parse_bgg_user_collection()
@@ -141,11 +149,12 @@ def main():
     boardgames = get_bgg_user_collection(small_collection_user)
     end_time = time.time()
     print(f"Querying {len(boardgames)} took {end_time - start_time} seconds.")
-    
+
     game_ids = [game["objectid"] for game in boardgames]
     cached_games, uncached_game_ids = get_cached_bgg_game_details(game_ids)
     game_details = batch_bgg_details(uncached_game_ids)
-    
+
     print(game_details)
+
 
 # main()

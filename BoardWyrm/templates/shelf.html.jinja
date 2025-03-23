@@ -13,7 +13,7 @@
         <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">{{ username }}'s collection</h1>
 
         {% for shelf in game_shelves %}
-        <div class="justify-center flex border-8 border-amber-800">
+        <div class="justify-center flex border-b-8 border-b-amber-800 mt-6">
             {% for game_url in shelf %}
             <div class="game-box">
                 <img src="{{ game_url }}" alt="Board game thumbnail" class="h-full w-full">
