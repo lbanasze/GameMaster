@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from markupsafe import escape
 from datetime import datetime
-from parse import get_bgg_user_collection
+from parse import get_bgg_user_collection, get_bgg_game_details
 from pprint import pprint
-import requests
+from models.bgg_game_details import BggGameDetails
 
 app = Flask(__name__)
 
@@ -26,3 +26,15 @@ def user():
     return render_template(
         "shelf.html.jinja", game_shelves=game_shelves, username=username
     )
+
+
+@app.route("/debug-details/<username>")
+def game_details(username):
+    collection = get_bgg_user_collection(username)
+    game_ids =  list(map(lambda item: int(item.get("objectid", "")), collection))
+    results = get_bgg_game_details(game_ids)
+    results = list(filter(lambda r:  r.get("error", None) == None, results))
+    details = [BggGameDetails.model_validate(detail) for detail in results]
+    pprint(details)
+    render = [d.model_dump() for d in details]
+    return jsonify(render)
