@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 from markupsafe import escape
 from datetime import datetime
 from parse import get_bgg_user_collection, get_bgg_game_details
-from pprint import pprint
 from models.bgg_game_details import BggGameDetails
 
 app = Flask(__name__)
@@ -35,6 +34,5 @@ def game_details(username):
     results = get_bgg_game_details(game_ids)
     results = list(filter(lambda r:  r.get("error", None) == None, results))
     details = [BggGameDetails.model_validate(detail) for detail in results]
-    pprint(details)
     render = [d.model_dump() for d in details]
     return jsonify(render)
